@@ -23,4 +23,28 @@ class Program
             tableCmd.ExecuteNonQuery();
         }
     }
+    
+    static void GetUserInput()
+    {
+        Console.Clear();
+        bool closeApp = false;
+        while (closeApp == false)
+        {
+            Console.WriteLine("\n\nMAIN MENU");
+            Console.WriteLine("\n Hello my firends, please take care of your healths :)");
+            Console.WriteLine("\n What do you want to do?");
+            Console.WriteLine("Type 1 to View all stats.");
+            Console.WriteLine("Type 2 to Insert a stat.");
+            Console.WriteLine("Type 3 to Delete stat.");
+            Console.WriteLine("Type 4 to Upadate stat.");
+            Console.WriteLine("\nType 0 Close Application");
+            Console.WriteLine("------------------------------------------------------------\n");
+            
+            string command = Console.ReadLine();
+
+        }
+    }
+
 }
+
+
