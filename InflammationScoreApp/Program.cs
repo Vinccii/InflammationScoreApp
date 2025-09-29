@@ -146,7 +146,7 @@ class Program
     }
 
     private static void Delete()
-    {
+    {    
         Console.Clear();
         GetAllStats();
 
@@ -216,6 +216,12 @@ class Program
 
         if (DateInput == "0") GetUserInput();
 
+        while (!DateTime.TryParseExact(DateInput, "dd-MM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+        {
+            Console.WriteLine("\nInvalid date format. Please use (dd-mm-yy) format.\n");
+            DateInput = Console.ReadLine();
+        }
+
         return DateInput;
     }
 
@@ -226,6 +232,12 @@ class Program
         string numberInput = Console.ReadLine();
 
         if (numberInput == "0") GetUserInput();
+
+        while (!Int32.TryParse(numberInput, out _) || Convert.ToInt32(numberInput) < 0)
+        {
+            Console.WriteLine("\nInvalid number. Please try agian!\n");
+            numberInput = Console.ReadLine();
+        }
 
         int finalInput = Convert.ToInt32(numberInput);
 
