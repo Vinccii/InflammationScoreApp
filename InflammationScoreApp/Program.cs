@@ -67,12 +67,12 @@ class Program
                     Delete();
                     break;
 
-                //case "4":
-                //    Update();
-               //     break;
+                case "4":
+                   Update();
+                   break;
                 
                 default:
-                    Console.WriteLine("\nInvalid Comand :(\n");
+                    Console.WriteLine("\nInvalid Command :(\n");
                     break;
             }
 
@@ -171,6 +171,42 @@ class Program
         Console.WriteLine($"\nEntry with the Id {statId} was deleted successfully! :)\n");
 
         GetUserInput();
+    }
+
+    internal static void Update()
+    {
+        Console.Clear();
+        GetAllStats();
+
+        var statId = GetNumberInput("\n\nPlease insert the ID of the entry you want to update or type 0 to go back to the Menu :)\n\n");
+
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+
+            var checkCmd = connection.CreateCommand();
+            checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM nutrition_logs WHERE Id = '{statId}');";
+            int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+            if (checkQuery == 0)
+            {
+                Console.WriteLine($"\nNo entry with the Id {statId} found. :(\n");
+                connection.Close();
+                Update();
+            }
+
+            string date = GetDateInput();
+
+            int quantity = GetNumberInput("\n\nPlease insert an amount of your messured inflammaitorial food (only integers for now :c)\n\n");
+
+            var tableCmd = connection.CreateCommand();
+            tableCmd.CommandText =               
+                $"UPDATE nutrition_logs SET Date = '{date}', Quantity = {quantity} WHERE Id = '{statId}'";
+
+            tableCmd.ExecuteNonQuery();
+
+            connection.Close();
+        }
     }
     internal static string GetDateInput()
     {
