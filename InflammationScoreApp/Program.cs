@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using Microsoft.Data.Sqlite;
 using Microsoft.VisualBasic.FileIO;
@@ -54,27 +55,73 @@ class Program
                     Environment.Exit(0);
                     break;
                 
-                /*case "1":
+                case "1":
                     GetAllStats();
-                    break;*/
+                    break;
                 
                 case "2":
                     Insert();
                     break;
 
-                /*case "3":
+                case "3":
                     Delete();
                     break;
 
-                case "4":
-                    Update();
-                    break;
+                //case "4":
+                //    Update();
+               //     break;
                 
                 default:
                     Console.WriteLine("\nInvalid Comand :(\n");
-                    break;*/
+                    break;
             }
 
+        }
+    }
+    
+    private static void GetAllStats()
+    {
+        Console.Clear();
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+            var tableCmd = connection.CreateCommand();
+            tableCmd.CommandText =
+                $"SELECT * FROM nutrition_logs;";
+
+            List<NutritionLog> tableData = new();
+
+            SqliteDataReader reader = tableCmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    var s = reader.GetString(1);
+                    string[] formats = { "yyyy-MM-dd", "dd-MM-yy", "dd-MM-yyyy" };
+
+                    DateTime dt = DateTime.ParseExact(s, formats, CultureInfo.InvariantCulture, DateTimeStyles.None);
+                    tableData.Add(new NutritionLog()
+                    {
+                        Id = reader.GetInt32(0),
+                        Date = dt,
+                        Quantity = reader.GetInt32(2)
+                    }); ;
+                }
+            }
+            else
+            {
+                Console.WriteLine("\nNo data found :(\n");
+            }
+
+            connection.Close();
+
+            Console.WriteLine("-----------------------------------------------------------\n");
+            foreach (var log in tableData)
+            {
+                Console.WriteLine($"ID: {log.Id} | Date: {log.Date.ToString("dd-MM-yyyy")} | Quantity: {log.Quantity}");
+            }
+            Console.WriteLine("-----------------------------------------------------------\n");
         }
     }
     private static void Insert()
@@ -98,6 +145,33 @@ class Program
         }
     }
 
+    private static void Delete()
+    {
+        Console.Clear();
+        GetAllStats();
+
+        var statId = GetNumberInput("\n\nPlease insert the ID of the entry you want to delete or type 0 to go back to the Menu :)\n\n");
+        using (var connection = new SqliteConnection(connectionString))
+        {
+            connection.Open();
+            var tableCmd = connection.CreateCommand();
+            tableCmd.CommandText =
+                tableCmd.CommandText =
+                $"DELETE FROM nutrition_logs WHERE Id = '{statId}'";
+
+            int rowCount = tableCmd.ExecuteNonQuery();
+
+            if (rowCount == 0)
+            {
+                Console.WriteLine($"\nNo entry with the Id {statId} found. :(\n");
+                Delete();
+            }
+        }
+
+        Console.WriteLine($"\nEntry with the Id {statId} was deleted successfully! :)\n");
+
+        GetUserInput();
+    }
     internal static string GetDateInput()
     {
         Console.WriteLine("\n\nPlease isnert a date in the format of (dd-mm-yy) :). In order to return to the main menu type 0.");
@@ -121,6 +195,15 @@ class Program
 
         return finalInput;
     }
+}
+
+
+
+internal class NutritionLog
+{
+    public int Id { get; set; }
+    public DateTime Date { get; set; }
+    public int Quantity { get; set; }
 }
 
 
