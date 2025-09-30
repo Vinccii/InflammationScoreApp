@@ -18,7 +18,9 @@ This project was built as a learning exercise to practice CRUD operations with S
 
 ## Example Usage
 ![0At5PSD0Jc](https://github.com/user-attachments/assets/09afe0b5-8056-4605-90b4-36c892c248d2)
+
 Example output when viewing all stats:
+
 <img width="488" height="91" alt="image" src="https://github.com/user-attachments/assets/ee6ddad0-a21c-4c2c-a8cc-fbef4a6a7401" />
 
 ## Tech Stack
